@@ -1,5 +1,4 @@
 import requests
-import pprint
 from bs4 import BeautifulSoup as bs
 
 
@@ -48,8 +47,6 @@ links = findBooks(r)
 
 downloadLinks = []
 for i in links:
-	if len(downloadLinks) >20:
-		break
 	try:
 		r = requests.get(i)
 		findDownload(r)
