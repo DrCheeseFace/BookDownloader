@@ -77,17 +77,16 @@ if len(downloadLinks) == 0:
 
 
 count = 1
-print('\n')
+print('\n' + '\033[1m' + 'DOWNLOAD LIST\n')
 for i in downloadLinks:
 	title = titles[count-1]
-	string = str(count)+')'+title
+	num = '\033[1m'+str(count)
+	string = num + ')  ' + '\033[0m'+title
 	if 'epub' in i:
-		print(string+'.epub')
+		print(string+'.epub\n')
 	else:
-		print(string+'.pdf')
-	print('\n')
+		print(string+'.pdf\n')
 	
-
 	
 	count+=1
 
