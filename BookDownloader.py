@@ -92,12 +92,9 @@ for i in downloadLinks:
 
 downloadIndex = int(input('index of which download? : '))
 
-
-
-
 request = 'http://93.174.95.29' + str(downloadLinks[downloadIndex-1])
 print(request)
-r = requests.get(request,allow_redirects =True,verify = False)
+r = requests.get(request)
 if '.epub' in downloadLinks[downloadIndex-1]:
 	open(titles[downloadIndex-1]+'.epub','wb').write(r.content)
 else:
