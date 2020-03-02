@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
 
-
 def getsearch():
 	global searchQuery
 	searchQuery = input('Enter Search term for book / author: ')
@@ -16,11 +15,10 @@ def getsearch():
 	print(search)
 	return search
 
-def printHTML(request):
-	data = request.text
-	soup = bs(data)
-	prettyHTML = soup.prettify()
-	print(prettyHTML)
+def printhtml(r):
+	soup = bs(r.text)
+	print(soup.prettify())
+
 
 def findBooks(r):
 
@@ -32,6 +30,16 @@ def findBooks(r):
 
 	return links_with_text
 
+def findTitles(r):
+	soup = bs(r.text,'html.parser')
+	bookTitles = []
+	for a in soup.find_all('a'):
+		if a.text and 'book/index.php?md5' in a['href']:
+			bookTitles.append(a.text)		
+	return bookTitles
+
+
+	
 def findDownload(r):
 	soup = bs(r.text,'html.parser')
 	for a in soup.find_all('a',href = True):
@@ -41,21 +49,23 @@ def findDownload(r):
 
 search = getsearch()
 r = requests.get(search)
+#printhtml(r)
 links = findBooks(r)
-
-
+titles = findTitles(r)
 
 downloadLinks = []
 for i in links:
 	try:
-		r = requests.get(i)
+		r = requests.get(i,verify = False)
 		findDownload(r)
 	except:
 		pass
+
 count = 0
 for i in downloadLinks:
-	if '.epub' not in i and '.pdf' not in i:
+	if ('.epub'  in i) and ('.pdf'  in i):
 		downloadLinks.pop(count)
+		titles.pop(count)
 	count+=1
 
 
@@ -67,18 +77,32 @@ if len(downloadLinks) == 0:
 
 
 count = 1
+print('\n')
 for i in downloadLinks:
-	link = '\n' + str(count) + ') ' + 'http://93.174.95.29' + i
+	title = titles[count-1]
+	string = str(count)+')'+title
+	if 'epub' in i:
+		print(string+'epub')
+	else:
+		print(string+'pdf')
+	print('\n')
+	
+
+	
 	count+=1
-	print(link)
+
 downloadIndex = int(input('index of which download? : '))
 
-print('\n http://93.174.95.29'+downloadLinks[downloadIndex-1])
-r = requests.get('http://93.174.95.29'+downloadLinks[downloadIndex-1],allow_redirects =True)
+
+
+
+request = 'https://93.174.95.29' + str(downloadLinks[downloadIndex-1])
+print(request)
+r = requests.get(request,allow_redirects =True,verify = False)
 if '.epub' in downloadLinks[downloadIndex-1]:
-	open(searchQuery+'.epub','wb').write(r.content)
+	open(titles[downloadIndex-1]+'.epub','wb').write(r.content)
 else:
-	open(searchQuery+'.pdf','wb').write(r.content)
+	open(titles[downloadIndex-1]+'.pdf','wb').write(r.content)
 
 print('DONE') 
 
