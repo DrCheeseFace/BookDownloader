@@ -1,4 +1,8 @@
 # BookDownloader
+
+#NO LONGER FUNCTIONING#
+
+
 ya enter the name of a book and ya get the download link for the book 
 
 lord forgive my spagetti code
